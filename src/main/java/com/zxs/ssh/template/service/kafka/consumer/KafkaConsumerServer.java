@@ -26,7 +26,7 @@ public class KafkaConsumerServer implements MessageListener<String, String> {
     public void onMessage(ConsumerRecord<String, String> consumerRecord) {
         String value = consumerRecord.value();
         try {
-            logger.info(value);
+            logger.info("消费者："+value);
         } catch (Exception e) {
             logger.error("日志对象构建异常", e);
         }

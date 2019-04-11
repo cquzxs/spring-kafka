@@ -2,14 +2,20 @@ package com.zxs.ssh.template.service.kafka.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zxs.ssh.template.service.kafka.consumer.KafkaConsumerServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Project Name:log-analysis-platform
@@ -22,7 +28,10 @@ import java.util.Map;
  */
 
 @Service("kafkaProducerServer")
+@EnableScheduling
 public class KafkaProducerServer {
+    private static final Logger logger = LoggerFactory.getLogger(KafkaProducerServer.class);
+
     @Resource(name = "kafkaTemplate")
     private KafkaTemplate<String, String> kafkaTemplate;
 
@@ -41,6 +50,14 @@ public class KafkaProducerServer {
         ObjectMapper mapper = new ObjectMapper();
         String valueString = mapper.writeValueAsString(value);
         ListenableFuture<SendResult<String, String>> result = this.kafkaTemplate.send(topic, valueString);
+        logger.info("生产者："+valueString);
         return new HashMap<>();
+    }
+
+    @Scheduled(cron = "0 * * * * ?")
+    public void produce()throws Exception{
+        String data = new Random().nextInt()+"";
+        this.kafkaTemplate.send("spring-kafka",data);
+        logger.info("生产者："+data);
     }
 }

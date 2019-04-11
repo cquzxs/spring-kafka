@@ -42,6 +42,14 @@
         <constructor-arg ref="producerProperties"/>
     </bean>
 
+    <bean id="kafkaTemplate"
+          class="org.springframework.kafka.core.KafkaTemplate">
+        <constructor-arg ref="producerFactory"/>
+        <constructor-arg name="autoFlush" value="true"/>
+        <property name="defaultTopic" value="${producer.topic}"/>
+        <!--<property name="producerListener" ref="producerListener"/>-->
+    </bean>
+
     <bean id="consumerFactory"
           class="org.springframework.kafka.core.DefaultKafkaConsumerFactory">
         <constructor-arg ref="consumerProperties"/>
@@ -60,11 +68,5 @@
         <constructor-arg ref="containerProperties"/>
     </bean>
 
-    <bean id="kafkaTemplate"
-          class="org.springframework.kafka.core.KafkaTemplate">
-        <constructor-arg ref="producerFactory"/>
-        <constructor-arg name="autoFlush" value="true"/>
-        <property name="defaultTopic" value="${producer.topic}"/>
-        <!--<property name="producerListener" ref="producerListener"/>-->
-    </bean>
+
 </beans>
